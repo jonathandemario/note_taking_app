@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:note_taking_app/note.dart';
+import 'package:note_taking_app/models/note.dart';
 import 'package:note_taking_app/main.dart';
-import 'package:note_taking_app/detail_page.dart';
+import 'package:note_taking_app/pages/detail_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -15,9 +15,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var _notes = Hive.box<Note>('notes');
   List<Note> noteList = [];
+  List<dynamic> keyList = [];
 
   Future fetchNotes() async {
-    final keyList = _notes.keys.toList();
+    keyList = _notes.keys.toList();
     if (keyList.isNotEmpty) {
       for (var key in keyList) {
         print ('Key: ${key}\n${_notes.get(key)!.noteTitle}');
@@ -39,8 +40,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('Note'),
+      body:  (
+
       ),
     );
   }

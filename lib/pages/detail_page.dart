@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:note_taking_app/note.dart';
+import 'package:note_taking_app/models/note.dart';
 import 'package:note_taking_app/main.dart';
-import 'package:note_taking_app/home_page.dart';
+import 'package:note_taking_app/pages/home_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DetailPage extends StatefulWidget {
   final int curr_index;
-  final String menuType;
+  final bool isCreateNew;
 
   DetailPage({
     super.key,
     required this.curr_index,
-    required this.menuType
+    required this.isCreateNew
   });
 
   @override
@@ -55,6 +55,8 @@ class _DetailPageState extends State<DetailPage> {
 
   // Note this_data = Note(noteName: 'c', noteDetail: 'abcdefghij', noteCreatedDate: getTime(), noteUpdatedDate: getTime());
   // _notes.put(checkIndex(), this_data);
+
+  
   Future createNote(data) async {
     _notes.put(checkIndex(), data);
   }
