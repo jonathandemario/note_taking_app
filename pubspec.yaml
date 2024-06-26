@@ -22,3 +22,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: SFRegular
+      fonts:
+        - asset: assets/fonts/SFUIDisplay-Regular.otf
+    - family: SFBold
+      fonts:
+        - asset: assets/fonts/SFUIDisplay-Bold.ttf

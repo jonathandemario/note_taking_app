@@ -40,7 +40,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  (
+      appBar: AppBar(
+        title: Text(
+          'Notes', 
+          style: TextStyle(fontFamily: 'SFBold', fontSize: 30),
+        ),
+      ),
+      body: Column(
 
       ),
     );
