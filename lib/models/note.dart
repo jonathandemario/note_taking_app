@@ -11,15 +11,19 @@ class Note extends HiveObject {
   String noteDetail;
 
   @HiveField(2)
-  final String noteCreatedDate;
+  final noteCreatedDate;
 
   @HiveField(3)
-  String noteUpdatedDate;
+  var noteUpdatedDate;
+
+  @HiveField(4)
+  final noteId;
 
   Note({
     required this.noteTitle,
     required this.noteDetail,
     required this.noteCreatedDate,
     required this.noteUpdatedDate,
+    required this.noteId
   });
 }

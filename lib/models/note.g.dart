@@ -19,15 +19,16 @@ class NoteAdapter extends TypeAdapter<Note> {
     return Note(
       noteTitle: fields[0] as String,
       noteDetail: fields[1] as String,
-      noteCreatedDate: fields[2] as String,
-      noteUpdatedDate: fields[3] as String,
+      noteCreatedDate: fields[2] as dynamic,
+      noteUpdatedDate: fields[3] as dynamic,
+      noteId: fields[4] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, Note obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.noteTitle)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class NoteAdapter extends TypeAdapter<Note> {
       ..writeByte(2)
       ..write(obj.noteCreatedDate)
       ..writeByte(3)
-      ..write(obj.noteUpdatedDate);
+      ..write(obj.noteUpdatedDate)
+      ..writeByte(4)
+      ..write(obj.noteId);
   }
 
   @override
