@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:note_taking_app/models/note.dart';
 import 'package:note_taking_app/main.dart';
 import 'package:note_taking_app/pages/home_page.dart';
+import 'package:note_taking_app/pages/detail_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -21,6 +22,9 @@ class _CreatePageState extends State<CreatePage> {
 
   Color pickerColor = Colors.white54;
   Color currentColor = Colors.white54;
+
+  String title = '';
+  String detail = '';
 
   void changeColor(Color color) {
     setState(() => pickerColor = color);
@@ -49,11 +53,6 @@ class _CreatePageState extends State<CreatePage> {
         ),
         actions: <Widget>[
           ElevatedButton(
-            child: const Text(
-              'Select',
-              style: TextStyle(
-                  fontFamily: 'SFBold', fontSize: 14, color: Colors.white),
-            ),
             onPressed: () {
               print(pickerColor);
               setState(() => currentColor = pickerColor);
@@ -64,6 +63,11 @@ class _CreatePageState extends State<CreatePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20), // Border radius
               ),
+            ),
+            child: const Text(
+              'Select',
+              style: TextStyle(
+                  fontFamily: 'SFBold', fontSize: 14, color: Colors.white),
             ),
           ),
         ],
@@ -80,40 +84,36 @@ class _CreatePageState extends State<CreatePage> {
     return maxKey + 1;
   }
 
-  String getTime() {
+  DateTime getTime() {
     DateTime curr_timestamp = DateTime.now();
-    String curr_time = DateFormat('dd/MM/yyyy HH:mm:ss').format(curr_timestamp);
-    return curr_time;
+    return curr_timestamp;
   }
 
-  // Note this_data = Note(noteName: 'c', noteDetail: 'abcdefghij', noteCreatedDate: getTime(), noteUpdatedDate: getTime());
-  // _notes.put(checkIndex(), this_data);
-
-  Future createNote(data) async {
-    _notes.put(checkIndex(), data);
+  String getFormatTime(curr_timestamp) {
+    String currTime =
+        '${DateFormat('EEE, dd MMM yyyy').format(curr_timestamp)} (${DateFormat('hh:mm a').format(curr_timestamp)})';
+    return currTime;
   }
 
-  Future editNote(index, title, detail, updatedTime) async {
-    Note updated_note = _notes.get(index)!;
-
-    updated_note.noteTitle = title;
-    updated_note.noteDetail = detail;
-    updated_note.noteUpdatedDate = updatedTime;
-
-    _notes.put(index, updated_note);
-  }
-
-  Future deleteNote(index) async {
-    _notes.delete(index);
+  Future createNote(Note data) async {
+    if (data.noteTitle == '' && data.noteDetail == '') {
+      Navigator.pop(context, false);
+    } else {
+      if (data.noteTitle == '' && data.noteDetail != '') {
+        data.noteTitle = 'New Note';
+        _notes.put(checkIndex(), data);
+        Navigator.pop(context, true);
+      } else {
+        _notes.put(checkIndex(), data);
+        Navigator.pop(context, true);
+      }
+    }
   }
 
   @override
   void initState() {
     super.initState();
   }
-
-  String title = '';
-  String detail = '';
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +126,14 @@ class _CreatePageState extends State<CreatePage> {
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Note this_note = Note(
+                noteTitle: title,
+                noteDetail: detail,
+                noteCreatedDate: getTime(),
+                noteUpdatedDate: getTime(),
+                noteId: checkIndex(),
+                noteColor: currentColor.toString());
+            createNote(this_note);
           },
         ),
         actions: [
@@ -157,6 +164,7 @@ class _CreatePageState extends State<CreatePage> {
                         title = value;
                       });
                     },
+                    style: TextStyle(fontFamily: 'SFBold', fontSize: 20),
                     expands: false,
                     maxLines: 1,
                     cursorColor: Colors.amber,
@@ -173,21 +181,18 @@ class _CreatePageState extends State<CreatePage> {
                         detail = value;
                       });
                     },
-                    minLines: 26,
+                    minLines: 24,
                     expands: false,
                     maxLines: null,
+                    style: TextStyle(fontFamily: 'SFRegular', fontSize: 18),
                     cursorColor: Colors.amber,
                     decoration: const InputDecoration(
                       hintText: 'Enter your notes...',
                       border: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                        ),
+                        borderSide: BorderSide(),
                       ),
                       focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                        ),
+                        borderSide: BorderSide(),
                       ),
                     ),
                   ),
