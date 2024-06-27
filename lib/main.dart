@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_taking_app/models/note.dart';
 import 'package:note_taking_app/pages/pin_page.dart';
-import 'package:note_taking_app/pages/home_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {

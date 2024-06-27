@@ -2,10 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:note_taking_app/models/note.dart';
-import 'package:note_taking_app/main.dart';
 import 'package:note_taking_app/pages/home_page.dart';
-import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quickalert/quickalert.dart';
 
