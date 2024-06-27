@@ -22,13 +22,14 @@ class NoteAdapter extends TypeAdapter<Note> {
       noteCreatedDate: fields[2] as dynamic,
       noteUpdatedDate: fields[3] as dynamic,
       noteId: fields[4] as dynamic,
+      noteColor: fields[5] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, Note obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.noteTitle)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class NoteAdapter extends TypeAdapter<Note> {
       ..writeByte(3)
       ..write(obj.noteUpdatedDate)
       ..writeByte(4)
-      ..write(obj.noteId);
+      ..write(obj.noteId)
+      ..writeByte(5)
+      ..write(obj.noteColor);
   }
 
   @override

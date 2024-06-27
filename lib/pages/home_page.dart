@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:note_taking_app/models/note.dart';
 import 'package:note_taking_app/main.dart';
+import 'package:note_taking_app/pages/create_page.dart';
 import 'package:note_taking_app/pages/detail_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -16,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   var _notes = Hive.box<Note>('notes');
   final _search = TextEditingController();
 
-  List<Note> noteList = [];
+  List<Note> noteList = [];  
 
   Future fetchNotes(keyword) async {
     List keys = _notes.keys.toList();
@@ -69,13 +70,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   String getFormatTime(curr_timestamp) {
-    String curr_time = DateFormat('dd/MM/yyyy HH:mm:ss').format(curr_timestamp);
+    // String curr_time = DateFormat('dd/MM/yyyy HH:mm:ss').format(curr_timestamp);
+    String curr_time = DateFormat('EEE, dd MMM yyyy').format(curr_timestamp) +
+        ' (' +
+        DateFormat('hh:mm a').format(curr_timestamp) +
+        ')';
     return curr_time;
   }
 
   @override
   void initState() {
     super.initState();
+    // Note this_data = Note(noteTitle: 'b', noteDetail: 'a', noteCreatedDate: getTime(), noteUpdatedDate: getTime(), noteId: checkIndex(), noteColor: 'Colors.yellow');
+    // _notes.put(checkIndex(), this_data);
     fetchNotes('');
   }
 
@@ -83,28 +90,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 3,
-                blurRadius: 3,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: AppBar(
-            backgroundColor: Colors.amber,
-            title: const Text(
-              'Notes',
-              style: TextStyle(
-                fontFamily: 'SFBold',
-                fontSize: 30,
-              ),
-            ),
+        backgroundColor: Colors.amber,
+        title: const Text(
+          'Notes',
+          style: TextStyle(
+            fontFamily: 'SFBold',
+            fontSize: 30,
+            color: Colors.white
           ),
         ),
       ),
@@ -118,13 +110,14 @@ class _HomePageState extends State<HomePage> {
                 fontFamily: 'SFRegular',
                 fontSize: 16,
               ),
-              cursorColor: Colors.black,
+              cursorColor: Colors.amber,
               decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(vertical: 12.0),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(30.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(30.0),
                 ),
                 hintText: 'Search',
                 prefixIcon: Icon(Icons.search),
@@ -142,10 +135,11 @@ class _HomePageState extends State<HomePage> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Card(
+                    // color: getColor(note.noteColor),
+                    color: Colors.white,
                     child: ListTile(
                       onTap: () {
                         print('Card tapped: ${note.noteTitle}');
-                        
                       },
                       title: Text(
                         note.noteTitle,
@@ -156,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        'Last updated at ${note.noteUpdatedDate}',
+                        'Last updated: ${getFormatTime(note.noteUpdatedDate)}',
                         style: const TextStyle(
                             fontFamily: 'SFReguler',
                             fontSize: 12,
@@ -183,12 +177,26 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print('Add button pressed');
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //       builder: (context) => CreatePage()
+          //   )
+          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreatePage(
+              )
+            ),
+          );
         },
         backgroundColor: Colors.amber,
         shape: CircleBorder(),
         child: Icon(
           Icons.edit_note_rounded,
           size: 30,
+          color: Colors.white,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

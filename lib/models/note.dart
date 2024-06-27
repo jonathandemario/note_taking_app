@@ -19,11 +19,15 @@ class Note extends HiveObject {
   @HiveField(4)
   final noteId;
 
+  @HiveField(5)
+  var noteColor;
+
   Note({
     required this.noteTitle,
     required this.noteDetail,
     required this.noteCreatedDate,
     required this.noteUpdatedDate,
-    required this.noteId
+    required this.noteId,
+    required this.noteColor
   });
 }

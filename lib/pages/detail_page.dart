@@ -6,12 +6,20 @@ import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DetailPage extends StatefulWidget {
-  final int curr_index;
+  var curr_title;
+  var curr_detail;
+  final curr_created_date;
+  var curr_updated_date;
+  final curr_id;
   final bool isCreateNew;
 
   DetailPage({
     super.key,
-    required this.curr_index,
+    required this.curr_title,
+    required this.curr_detail,
+    required this.curr_created_date,
+    required this.curr_updated_date,
+    required this.curr_id,
     required this.isCreateNew
   });
 
@@ -22,22 +30,6 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   var _notes = Hive.box<Note>('notes');
   List<Note> noteList = [];
-
-  // Future fetchNotes() async {
-  //   final keyList = _notes.keys.toList();
-  //   if (keyList.isNotEmpty) {
-  //     for (var key in keyList) {
-  //       print ('Key: ${key}');
-  //       print(_notes.get(key)!.noteTitle);
-  //       // _notes.delete(key);
-  //       setState(() {
-  //         noteList.add(_notes.get(key)!);
-  //       });
-  //     }
-  //   } else {
-  //     print('Notes Empty');
-  //   }
-  // }
 
   int checkIndex() {
     if (_notes.isEmpty) {
@@ -83,8 +75,98 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('Note'),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 3,
+                blurRadius: 3,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.amber,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.color_lens_rounded,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  // showPicker();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: Container(
+        // color: currentColor,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      // title = value;
+                    });
+                  },
+                  expands: false, 
+                  maxLines: 1,
+                  cursorColor: Colors.amber,
+                  decoration: InputDecoration(
+                    hintText: 'Enter title...',
+                    border: UnderlineInputBorder(),
+                    focusedBorder: UnderlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      // detail = value;
+                    });
+                  },
+                  minLines: 23,
+                  expands: false,
+                  maxLines: null,
+                  cursorColor: Colors.amber,
+                  decoration: InputDecoration(
+                    hintText: 'Enter your notes...',
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Created: ',
+                  style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                ),
+                Text(
+                  'Last Updated: ',
+                  style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
