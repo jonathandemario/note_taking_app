@@ -8,7 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Hive.registerAdapter(NoteAdapter());
   await Hive.initFlutter();
-  // await Hive.openBox('password');
+  await Hive.openBox('password');
   await Hive.openBox<Note>('notes');
   runApp(const MainApp());
 }
@@ -21,7 +21,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Notes",
-      home: HomePage(),
+      home: PinPage(),
     );
   }
 }
