@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
         type: QuickAlertType.success,
         showConfirmBtn: false,
         text: 'Note Deleted!',
-        autoCloseDuration: Duration(seconds: 2)
+        autoCloseDuration: Duration(seconds: 1)
       );
       fetchNotes('');
     }
