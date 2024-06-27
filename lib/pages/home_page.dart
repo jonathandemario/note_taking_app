@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:note_taking_app/models/note.dart';
 import 'package:note_taking_app/main.dart';
@@ -6,6 +8,7 @@ import 'package:note_taking_app/pages/detail_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:quickalert/quickalert.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -88,7 +91,17 @@ class _HomePageState extends State<HomePage> {
 
   Future deleteNote(index) async {
     _notes.delete(index);
-    fetchNotes('');
+    if (mounted) {
+      Navigator.pop(context);
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.success,
+        showConfirmBtn: false,
+        text: 'Note Deleted!',
+        autoCloseDuration: Duration(seconds: 2)
+      );
+      fetchNotes('');
+    }
   }
 
   @override
@@ -170,7 +183,9 @@ class _HomePageState extends State<HomePage> {
                                               curr_id: note.noteId,
                                               curr_color: note.noteColor)))
                                   .then((value) {
-                                if (value == true) fetchNotes('');
+                                if (value == true) {
+                                  fetchNotes('');
+                                }
                               });
                             },
                             title: Text(
@@ -196,9 +211,20 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.red,
                               ),
                               onPressed: () {
-                                print(
-                                    'Delete icon tapped for: ${note.noteTitle}');
-                                deleteNote(note.noteId);
+                                print('Delete icon tapped for: ${note.noteTitle}');
+                                QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.confirm,
+                                  title: 'Note Delete',
+                                  text: 'Do you want to delete this note?',
+                                  animType: QuickAlertAnimType.scale,
+                                  confirmBtnText: 'Yes',
+                                  cancelBtnText: 'No',
+                                  confirmBtnColor: Colors.green,
+                                  onConfirmBtnTap: () {
+                                    deleteNote(note.noteId);
+                                  },
+                                );
                               },
                             ),
                           ),

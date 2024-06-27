@@ -6,6 +6,7 @@ import 'package:note_taking_app/pages/create_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:quickalert/quickalert.dart';
 
 class DetailPage extends StatefulWidget {
   var curr_title;
@@ -135,7 +136,10 @@ class _DetailPageState extends State<DetailPage> {
 
   Future deleteNote(index) async {
     _notes.delete(index);
-    Navigator.pop(context, true);
+    if (mounted) {
+      Navigator.pop(context);
+      Navigator.pop(context, true);
+    }
   }
 
   @override
@@ -182,7 +186,19 @@ class _DetailPageState extends State<DetailPage> {
               color: Colors.red,
             ),
             onPressed: () {
-              deleteNote(widget.curr_id);
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.confirm,
+                title: 'Note Delete',
+                text: 'Do you want to delete this note?',
+                animType: QuickAlertAnimType.scale,
+                confirmBtnText: 'Yes',
+                cancelBtnText: 'No',
+                confirmBtnColor: Colors.green,
+                onConfirmBtnTap: () {
+                  deleteNote(widget.curr_id);
+                },
+              );
             },
           ),
         ],

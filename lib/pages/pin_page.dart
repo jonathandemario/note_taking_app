@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:note_taking_app/models/note.dart';
@@ -5,6 +7,7 @@ import 'package:note_taking_app/main.dart';
 import 'package:note_taking_app/pages/home_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:quickalert/quickalert.dart';
 
 class PinPage extends StatefulWidget {
   const PinPage({super.key});
@@ -17,7 +20,7 @@ class _PinPageState extends State<PinPage> {
   var _pass = Hive.box('password');
   String enteredPass = '';
   String newPass = '';
-  String msgText = 'Create Your Pin';
+  String msgText = 'Create Your PIN';
   bool isPinVisible = false;
   late bool isNew;
   bool isCorrect = true;
@@ -48,12 +51,12 @@ class _PinPageState extends State<PinPage> {
     if (myPass == null) {
       setState(() {
         isNew = true;
-        msgText = 'Create Your Pin';
+        msgText = 'Create Your PIN';
       });
     } else {
       setState(() {
         isNew = false;
-        msgText = 'Enter Your Pin';
+        msgText = 'Enter Your PIN';
       });
     }
     print(myPass);
@@ -63,7 +66,7 @@ class _PinPageState extends State<PinPage> {
   resetState() {
     setState(() {
       isCorrect = true;
-      msgText = 'Enter Your Pin';
+      msgText = 'Enter Your PIN';
     });
   }
 
@@ -77,11 +80,26 @@ class _PinPageState extends State<PinPage> {
       if (enteredPass.length == 4) {
         if (enteredPass == myPass) {
           print('Logged In');
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.success,
+            showConfirmBtn: false,
+            title: 'Logged In',
+            autoCloseDuration: Duration(seconds: 1)
+          ).then((_) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage()
+              ),
+              (route) => false,
+            );
+          });
         } else {
           print('Wrong Password');
           setState(() {
             enteredPass = '';
-            msgText = 'Wrong Pin';
+            msgText = 'Wrong PIN';
             isCorrect = false;
           });
         }
@@ -92,24 +110,41 @@ class _PinPageState extends State<PinPage> {
   Future createPin() async {
     setState(() {
       isCorrect = true;
-      msgText = 'Re-Enter Your Pin';
+      if (newPass == '') msgText = 'Create Your PIN';
+      else msgText = 'Re-Enter Your PIN';
     });
     if (enteredPass.length == 4 && newPass == '') {
       print('Go to Confirm');
       setState(() {
         newPass = enteredPass;
         enteredPass = '';
-        msgText = 'Re-Enter Your Pin';
+        msgText = 'Re-Enter Your PIN';
       });
     } else if (enteredPass.length == 4 && newPass != '') {
       if (enteredPass == newPass) {
         print('Success');
         _pass.put('pass', enteredPass);
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          showConfirmBtn: false,
+          title: 'PIN Created',
+          text: 'Input your PIN to log in.',
+          autoCloseDuration: Duration(seconds: 1)
+        ).then((_) {
+          setState(() {
+            enteredPass = '';
+            newPass = '';
+            msgText = 'Enter Your PIN';
+            isNew = false;
+            isCorrect = true;
+          });
+        });
       } else {
         print('Not Same');
         setState(() {
         enteredPass = '';
-        msgText = 'Wrong Pin';
+        msgText = 'Wrong PIN';
         isCorrect = false;
       });
       }
@@ -117,14 +152,26 @@ class _PinPageState extends State<PinPage> {
   }
 
   Future resetPin() async {
+    print('PIN Reset');
     _pass.delete('pass');
     setState(() {
       enteredPass = '';
       newPass = '';
-      msgText = 'Create Your New Pin';
+      msgText = 'Create Your PIN';
       isNew = true;
       isCorrect = true;
     });
+
+    if (mounted) {
+      Navigator.pop(context);
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.success,
+        showConfirmBtn: false,
+        text: 'Reset PIN Successfully!',
+        autoCloseDuration: Duration(seconds: 1)
+      );
+    }
   }
 
   @override
@@ -200,7 +247,19 @@ class _PinPageState extends State<PinPage> {
             SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                resetPin();
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.confirm,
+                  title: 'PIN Reset',
+                  text: 'Do you want to reset your PIN?',
+                  animType: QuickAlertAnimType.scale,
+                  confirmBtnText: 'Yes',
+                  cancelBtnText: 'No',
+                  confirmBtnColor: Colors.green,
+                  onConfirmBtnTap: () {
+                    resetPin();
+                  },
+                );
               },
               child: const Text(
                 'Forgot Password?',

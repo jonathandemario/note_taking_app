@@ -6,6 +6,7 @@ import 'package:note_taking_app/pages/detail_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:quickalert/quickalert.dart';
 
 class CreatePage extends StatefulWidget {
   CreatePage({
@@ -144,6 +145,28 @@ class _CreatePageState extends State<CreatePage> {
             ),
             onPressed: () {
               showPicker();
+            },
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.confirm,
+                title: 'Note Not Saved',
+                text: 'Do you want to discard this note?',
+                animType: QuickAlertAnimType.scale,
+                confirmBtnText: 'Yes',
+                cancelBtnText: 'No',
+                confirmBtnColor: Colors.green,
+                onConfirmBtnTap: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context, false);
+                },
+              );
             },
           ),
         ],
