@@ -210,14 +210,36 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                 }
                               });
                             },
-                            title: Text(
-                              note.noteTitle,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontFamily: 'SFBold',
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: note.noteDetail == '' ? 8.0 : 0.0),
+                                  child: Text(
+                                    note.noteTitle,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontFamily: 'SFBold',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                if (note.noteDetail != '')
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(
+                                    note.noteDetail,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontFamily: 'SFRegular',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             subtitle: Text(
                               'Last updated: ${getFormatTime(note.noteUpdatedDate)}',
