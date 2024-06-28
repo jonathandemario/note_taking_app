@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:note_taking_app/models/note.dart';
+import 'package:note_taking_app/pages/pin_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -14,7 +17,7 @@ class CreatePage extends StatefulWidget {
   State<CreatePage> createState() => _CreatePageState();
 }
 
-class _CreatePageState extends State<CreatePage> {
+class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   var _notes = Hive.box<Note>('notes');
   List<Note> noteList = [];
 
@@ -23,6 +26,8 @@ class _CreatePageState extends State<CreatePage> {
 
   String title = '';
   String detail = '';
+
+  Timer? _backgroundTimer;
 
   void changeColor(Color color) {
     setState(() => pickerColor = color);
@@ -111,6 +116,36 @@ class _CreatePageState extends State<CreatePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this as WidgetsBindingObserver);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver);
+    super.dispose();
+  }
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _backgroundTimer = Timer(Duration(minutes: 5), () {
+        print('Reset to PIN Page');
+        Note this_note = Note(
+            noteTitle: title,
+            noteDetail: detail,
+            noteCreatedDate: getTime(),
+            noteUpdatedDate: getTime(),
+            noteId: checkIndex(),
+            noteColor: currentColor.toString());
+        createNote(this_note);
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => PinPage()),
+          (Route<dynamic> route) => false,
+        );
+      });
+    } else if (state == AppLifecycleState.resumed) {
+      _backgroundTimer?.cancel();
+      print('Reset to PIN Page Canceled');
+    }
   }
 
   @override

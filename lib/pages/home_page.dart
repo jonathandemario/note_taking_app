@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:note_taking_app/models/note.dart';
+import 'package:note_taking_app/pages/pin_page.dart';
 import 'package:note_taking_app/pages/create_page.dart';
 import 'package:note_taking_app/pages/detail_page.dart';
 import 'package:intl/intl.dart';
@@ -15,12 +16,14 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var _notes = Hive.box<Note>('notes');
   final _search = TextEditingController();
 
   List<Note> noteList = [];
   String msg = '';
+
+  Timer? _backgroundTimer;
 
   Color parseColor(String colorString) {
     String hexString = colorString.replaceAll('Color(', '').replaceAll(')', '');
@@ -92,12 +95,11 @@ class _HomePageState extends State<HomePage> {
     if (mounted) {
       Navigator.pop(context);
       QuickAlert.show(
-        context: context,
-        type: QuickAlertType.success,
-        showConfirmBtn: false,
-        text: 'Note Deleted!',
-        autoCloseDuration: Duration(seconds: 1)
-      );
+          context: context,
+          type: QuickAlertType.success,
+          showConfirmBtn: false,
+          text: 'Note Deleted!',
+          autoCloseDuration: Duration(seconds: 1));
       fetchNotes('');
     }
   }
@@ -106,6 +108,28 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchNotes('');
+    WidgetsBinding.instance.addObserver(this as WidgetsBindingObserver);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver);
+    super.dispose();
+  }
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _backgroundTimer = Timer(Duration(minutes: 5), () {
+        print('Reset to PIN Page');
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => PinPage()),
+          (Route<dynamic> route) => false,
+        );
+      });
+    } else if (state == AppLifecycleState.resumed) {
+      _backgroundTimer?.cancel();
+      print('Reset to PIN Page Canceled');
+    }
   }
 
   @override
@@ -209,7 +233,8 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.red,
                               ),
                               onPressed: () {
-                                print('Delete icon tapped for: ${note.noteTitle}');
+                                print(
+                                    'Delete icon tapped for: ${note.noteTitle}');
                                 QuickAlert.show(
                                   context: context,
                                   type: QuickAlertType.confirm,

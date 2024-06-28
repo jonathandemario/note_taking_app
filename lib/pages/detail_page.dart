@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:note_taking_app/models/note.dart';
+import 'package:note_taking_app/pages/pin_page.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -27,7 +30,7 @@ class DetailPage extends StatefulWidget {
   State<DetailPage> createState() => _DetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage> {
+class _DetailPageState extends State<DetailPage> with WidgetsBindingObserver {
   var _notes = Hive.box<Note>('notes');
 
   List<Note> noteList = [];
@@ -37,6 +40,8 @@ class _DetailPageState extends State<DetailPage> {
 
   String title = '';
   String detail = '';
+
+  Timer? _backgroundTimer;
 
   late TextEditingController _controllerTitle;
   late TextEditingController _controllerDetail;
@@ -56,7 +61,7 @@ class _DetailPageState extends State<DetailPage> {
       builder: (context) => AlertDialog(
         title: const Text('Pick a color!'),
         content: SizedBox(
-          height: 150, // Adjust this value as needed
+          height: 150,
           child: BlockPicker(
             pickerColor: currentColor,
             onColorChanged: changeColor,
@@ -80,9 +85,9 @@ class _DetailPageState extends State<DetailPage> {
               Navigator.of(context).pop();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber, // Background color
+              backgroundColor: Colors.amber,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20), // Border radius
+                borderRadius: BorderRadius.circular(20),
               ),
             ),
             child: const Text(
@@ -144,6 +149,36 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     super.initState();
     fetchData();
+    WidgetsBinding.instance.addObserver(this as WidgetsBindingObserver);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver);
+    super.dispose();
+  }
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _backgroundTimer = Timer(Duration(minutes: 5), () {
+        print('Reset to PIN Page');
+        Note this_note = Note(
+            noteTitle: title,
+            noteDetail: detail,
+            noteCreatedDate: widget.curr_created_date,
+            noteUpdatedDate: getTime(),
+            noteId: widget.curr_id,
+            noteColor: currentColor.toString());
+        updateNote(this_note);
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => PinPage()),
+          (Route<dynamic> route) => false,
+        );
+      });
+    } else if (state == AppLifecycleState.resumed) {
+      _backgroundTimer?.cancel();
+      print('Reset to PIN Page Canceled');
+    }
   }
 
   @override
@@ -164,7 +199,6 @@ class _DetailPageState extends State<DetailPage> {
                 noteUpdatedDate: getTime(),
                 noteId: widget.curr_id,
                 noteColor: currentColor.toString());
-            // createNote(this_note);
             updateNote(this_note);
           },
         ),
