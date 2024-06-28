@@ -188,118 +188,132 @@ class _DetailPageState extends State<DetailPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Note this_note = Note(
-                noteTitle: title,
-                noteDetail: detail,
-                noteCreatedDate: widget.curr_created_date,
-                noteUpdatedDate: getTime(),
-                noteId: widget.curr_id,
-                noteColor: currentColor.toString());
-            updateNote(this_note);
-          },
-        ),
-        actions: [
-          IconButton(
+    return WillPopScope(
+      onWillPop: () async {
+         Note this_note = Note(
+            noteTitle: title,
+            noteDetail: detail,
+            noteCreatedDate: widget.curr_created_date,
+            noteUpdatedDate: getTime(),
+            noteId: widget.curr_id,
+            noteColor: currentColor.toString());
+        updateNote(this_note);
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: currentColor,
+        appBar: AppBar(
+          backgroundColor: Colors.amber,
+          leading: IconButton(
             icon: const Icon(
-              Icons.color_lens_rounded,
+              Icons.arrow_back_rounded,
               color: Colors.white,
             ),
             onPressed: () {
-              showPicker();
+              Note this_note = Note(
+                  noteTitle: title,
+                  noteDetail: detail,
+                  noteCreatedDate: widget.curr_created_date,
+                  noteUpdatedDate: getTime(),
+                  noteId: widget.curr_id,
+                  noteColor: currentColor.toString());
+              updateNote(this_note);
             },
           ),
-          IconButton(
-            icon: const Icon(
-              Icons.delete_outline_rounded,
-              color: Colors.red,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.color_lens_rounded,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                showPicker();
+              },
             ),
-            onPressed: () {
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.confirm,
-                title: 'Note Delete',
-                text: 'Do you want to delete this note?',
-                animType: QuickAlertAnimType.scale,
-                confirmBtnText: 'Yes',
-                cancelBtnText: 'No',
-                confirmBtnColor: Colors.green,
-                onConfirmBtnTap: () {
-                  deleteNote(widget.curr_id);
-                },
-              );
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        color: currentColor,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            IconButton(
+              icon: const Icon(
+                Icons.delete_outline_rounded,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.confirm,
+                  title: 'Note Delete',
+                  text: 'Do you want to delete this note?',
+                  animType: QuickAlertAnimType.scale,
+                  confirmBtnText: 'Yes',
+                  cancelBtnText: 'No',
+                  confirmBtnColor: Colors.green,
+                  onConfirmBtnTap: () {
+                    deleteNote(widget.curr_id);
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        body: Container(
+          color: currentColor,
+          child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: _controllerTitle,
-                    onChanged: (value) {
-                      setState(() {
-                        title = value;
-                      });
-                    },
-                    style: TextStyle(fontFamily: 'SFBold', fontSize: 20),
-                    expands: false,
-                    maxLines: 1,
-                    cursorColor: Colors.amber,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter title...',
-                      border: UnderlineInputBorder(),
-                      focusedBorder: UnderlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 22),
-                  TextField(
-                    controller: _controllerDetail,
-                    onChanged: (value) {
-                      setState(() {
-                        detail = value;
-                      });
-                    },
-                    minLines: 22,
-                    expands: false,
-                    maxLines: null,
-                    style: TextStyle(fontFamily: 'SFRegular', fontSize: 18),
-                    cursorColor: Colors.amber,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your notes...',
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(),
+              padding: const EdgeInsets.all(16.0),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: _controllerTitle,
+                      onChanged: (value) {
+                        setState(() {
+                          title = value;
+                        });
+                      },
+                      style: TextStyle(fontFamily: 'SFBold', fontSize: 20),
+                      expands: false,
+                      maxLines: 1,
+                      cursorColor: Colors.amber,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter title...',
+                        border: UnderlineInputBorder(),
+                        focusedBorder: UnderlineInputBorder(),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Created: ${getFormatTime(widget.curr_created_date)}',
-                    style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-                  ),
-                  Text(
-                    'Last Updated: ${getFormatTime(widget.curr_updated_date)}',
-                    style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-                  ),
-                ],
+                    SizedBox(height: 22),
+                    TextField(
+                      controller: _controllerDetail,
+                      onChanged: (value) {
+                        setState(() {
+                          detail = value;
+                        });
+                      },
+                      minLines: 22,
+                      expands: false,
+                      maxLines: null,
+                      style: TextStyle(fontFamily: 'SFRegular', fontSize: 18),
+                      cursorColor: Colors.amber,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter your notes...',
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Created: ${getFormatTime(widget.curr_created_date)}',
+                      style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                    ),
+                    Text(
+                      'Last Updated: ${getFormatTime(widget.curr_updated_date)}',
+                      style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

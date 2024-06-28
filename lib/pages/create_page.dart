@@ -150,108 +150,122 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Note this_note = Note(
-                noteTitle: title,
-                noteDetail: detail,
-                noteCreatedDate: getTime(),
-                noteUpdatedDate: getTime(),
-                noteId: checkIndex(),
-                noteColor: currentColor.toString());
-            createNote(this_note);
-          },
-        ),
-        actions: [
-          IconButton(
+    return WillPopScope(
+      onWillPop: () async {
+        Note this_note = Note(
+            noteTitle: title,
+            noteDetail: detail,
+            noteCreatedDate: getTime(),
+            noteUpdatedDate: getTime(),
+            noteId: checkIndex(),
+            noteColor: currentColor.toString());
+        createNote(this_note);
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: currentColor,
+        appBar: AppBar(
+          backgroundColor: Colors.amber,
+          leading: IconButton(
             icon: const Icon(
-              Icons.color_lens_rounded,
+              Icons.arrow_back_rounded,
               color: Colors.white,
             ),
             onPressed: () {
-              showPicker();
+              Note this_note = Note(
+                  noteTitle: title,
+                  noteDetail: detail,
+                  noteCreatedDate: getTime(),
+                  noteUpdatedDate: getTime(),
+                  noteId: checkIndex(),
+                  noteColor: currentColor.toString());
+              createNote(this_note);
             },
           ),
-          IconButton(
-            icon: const Icon(
-              Icons.delete_outline_rounded,
-              color: Colors.red,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.color_lens_rounded,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                showPicker();
+              },
             ),
-            onPressed: () {
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.confirm,
-                title: 'Note Not Saved',
-                text: 'Do you want to discard this note?',
-                animType: QuickAlertAnimType.scale,
-                confirmBtnText: 'Yes',
-                cancelBtnText: 'No',
-                confirmBtnColor: Colors.green,
-                onConfirmBtnTap: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context, false);
-                },
-              );
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        color: currentColor,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            IconButton(
+              icon: const Icon(
+                Icons.delete_outline_rounded,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.confirm,
+                  title: 'Note Not Saved',
+                  text: 'Do you want to discard this note?',
+                  animType: QuickAlertAnimType.scale,
+                  confirmBtnText: 'Yes',
+                  cancelBtnText: 'No',
+                  confirmBtnColor: Colors.green,
+                  onConfirmBtnTap: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context, false);
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        body: Container(
+          color: currentColor,
+          child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        title = value;
-                      });
-                    },
-                    style: TextStyle(fontFamily: 'SFBold', fontSize: 20),
-                    expands: false,
-                    maxLines: 1,
-                    cursorColor: Colors.amber,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter title...',
-                      border: UnderlineInputBorder(),
-                      focusedBorder: UnderlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 22),
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        detail = value;
-                      });
-                    },
-                    minLines: 24,
-                    expands: false,
-                    maxLines: null,
-                    style: TextStyle(fontFamily: 'SFRegular', fontSize: 18),
-                    cursorColor: Colors.amber,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your notes...',
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(),
+              padding: const EdgeInsets.all(16.0),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          title = value;
+                        });
+                      },
+                      style: TextStyle(fontFamily: 'SFBold', fontSize: 20),
+                      expands: false,
+                      maxLines: 1,
+                      cursorColor: Colors.amber,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter title...',
+                        border: UnderlineInputBorder(),
+                        focusedBorder: UnderlineInputBorder(),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 22),
+                    TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          detail = value;
+                        });
+                      },
+                      minLines: 24,
+                      expands: false,
+                      maxLines: null,
+                      style: TextStyle(fontFamily: 'SFRegular', fontSize: 18),
+                      cursorColor: Colors.amber,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter your notes...',
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

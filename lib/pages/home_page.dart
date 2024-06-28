@@ -142,6 +142,32 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           style: TextStyle(
               fontFamily: 'SFBold', fontSize: 30, color: Colors.white),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.confirm,
+                title: 'Logout Confirmation',
+                text: 'Do you want to logout?',
+                animType: QuickAlertAnimType.scale,
+                confirmBtnText: 'Log Out',
+                cancelBtnText: 'No',
+                confirmBtnColor: Colors.green,
+                onConfirmBtnTap: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => PinPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
