@@ -10,12 +10,12 @@ import 'package:quickalert/quickalert.dart';
 
 // ignore: must_be_immutable
 class DetailPage extends StatefulWidget {
-  var curr_title;
-  var curr_detail;
+  final curr_title;
+  final curr_detail;
   final curr_created_date;
-  var curr_updated_date;
+  final curr_updated_date;
   final curr_id;
-  var curr_color;
+  final curr_color;
 
   DetailPage(
       {super.key,
@@ -123,16 +123,21 @@ class _DetailPageState extends State<DetailPage> with WidgetsBindingObserver {
   }
 
   Future updateNote(Note data) async {
-    if (data.noteTitle == '' && data.noteDetail == '') {
+    if (data.noteTitle == widget.curr_title && data.noteDetail == widget.curr_detail && data.noteColor == widget.curr_color) {
       Navigator.pop(context, false);
     } else {
-      if (data.noteTitle == '' && data.noteDetail != '') {
-        data.noteTitle = 'New Note';
-        _notes.put(data.noteId, data);
+      if (data.noteTitle == '' && data.noteDetail == '') {
+        _notes.delete(data.noteId);
         Navigator.pop(context, true);
       } else {
-        _notes.put(data.noteId, data);
-        Navigator.pop(context, true);
+        if (data.noteTitle == '' && data.noteDetail != '') {
+          data.noteTitle = 'New Note';
+          _notes.put(data.noteId, data);
+          Navigator.pop(context, true);
+        } else {
+          _notes.put(data.noteId, data);
+          Navigator.pop(context, true);
+        }
       }
     }
   }
