@@ -268,60 +268,68 @@ class _PinPageState extends State<PinPage> {
               ),
             ),
             SizedBox(height: 10),
-            for (var i = 0; i < 3; i++)
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(
-                    3,
-                    (index) => Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.amber,
-                      ),
-                      padding: EdgeInsets.only(
-                          bottom: 18), // Adjust padding for the circle size
-                      child: Center(child: numButton(1 + 3 * i + index)),
-                    ),
-                  ).toList(),
+            Center(
+  child: Padding(
+    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width >= 650 ? MediaQuery.of(context).size.width >= 1100 ? MediaQuery.of(context).size.width/3 : MediaQuery.of(context).size.width/4 : 0),
+    child: Column(
+      children: [
+        for (var i = 0; i < 3; i++)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(
+                3,
+                (index) => Container(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.amber,
+                  ),
+                  padding: const EdgeInsets.only(
+                      bottom: 18), // Adjust padding for the circle size
+                  child: Center(child: numButton(1 + 3 * i + index)),
+                ),
+              ).toList(),
+            ),
+          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const TextButton(onPressed: null, child: SizedBox()),
+              Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.amber,
+                ),
+                padding: const EdgeInsets.only(bottom: 18),
+                child: Center(child: numButton(0)),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(
+                    () {
+                      if (enteredPass.isNotEmpty) {
+                        enteredPass = enteredPass.substring(
+                            0, enteredPass.length - 1);
+                      }
+                    },
+                  );
+                },
+                child: const Icon(
+                  Icons.backspace,
+                  color: Colors.red,
+                  size: 24,
                 ),
               ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const TextButton(onPressed: null, child: SizedBox()),
-                  Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.amber,
-                    ),
-                    padding: EdgeInsets.only(bottom: 18),
-                    child: Center(child: numButton(0)),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(
-                        () {
-                          if (enteredPass.isNotEmpty) {
-                            enteredPass = enteredPass.substring(
-                                0, enteredPass.length - 1);
-                          }
-                        },
-                      );
-                    },
-                    child: const Icon(
-                      Icons.backspace,
-                      color: Colors.red,
-                      size: 24,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+),
             SizedBox(
               height: 20,
             ),
