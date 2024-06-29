@@ -300,11 +300,14 @@ class _PinPageState extends State<PinPage> {
             Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width >= 650
+                    horizontal:
+                    MediaQuery.of(context).size.width >= 510
+                     ? MediaQuery.of(context).size.width >= 640
                         ? MediaQuery.of(context).size.width >= 1100
-                            ? MediaQuery.of(context).size.width / 3
-                            : MediaQuery.of(context).size.width / 4
-                        : 0),
+                          ? MediaQuery.of(context).size.width / 3
+                          : MediaQuery.of(context).size.width / 4
+                        : MediaQuery.of(context).size.width / 5
+                      : 0),
                 child: Column(
                   children: [
                     for (var i = 0; i < 3; i++)
