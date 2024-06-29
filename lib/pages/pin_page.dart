@@ -78,17 +78,15 @@ class _PinPageState extends State<PinPage> {
         if (enteredPass == myPass) {
           print('Logged In');
           QuickAlert.show(
-            context: context,
-            type: QuickAlertType.success,
-            showConfirmBtn: false,
-            title: 'Logged In',
-            autoCloseDuration: Duration(seconds: 1)
-          ).then((_) {
+                  context: context,
+                  type: QuickAlertType.success,
+                  showConfirmBtn: false,
+                  title: 'Logged In',
+                  autoCloseDuration: Duration(seconds: 1))
+              .then((_) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                builder: (context) => HomePage()
-              ),
+              MaterialPageRoute(builder: (context) => HomePage()),
               (route) => false,
             );
           });
@@ -107,8 +105,10 @@ class _PinPageState extends State<PinPage> {
   Future createPin() async {
     setState(() {
       isCorrect = true;
-      if (newPass == '') msgText = 'Create Your PIN';
-      else msgText = 'Re-Enter Your PIN';
+      if (newPass == '')
+        msgText = 'Create Your PIN';
+      else
+        msgText = 'Re-Enter Your PIN';
     });
     if (enteredPass.length == 4 && newPass == '') {
       print('Go to Confirm');
@@ -122,13 +122,13 @@ class _PinPageState extends State<PinPage> {
         print('Success');
         _pass.put('pass', enteredPass);
         QuickAlert.show(
-          context: context,
-          type: QuickAlertType.success,
-          showConfirmBtn: false,
-          title: 'PIN Created',
-          text: 'Input your PIN to log in.',
-          autoCloseDuration: Duration(seconds: 1)
-        ).then((_) {
+                context: context,
+                type: QuickAlertType.success,
+                showConfirmBtn: false,
+                title: 'PIN Created',
+                text: 'Input your PIN to log in.',
+                autoCloseDuration: Duration(seconds: 1))
+            .then((_) {
           setState(() {
             enteredPass = '';
             newPass = '';
@@ -140,10 +140,10 @@ class _PinPageState extends State<PinPage> {
       } else {
         print('Not Same');
         setState(() {
-        enteredPass = '';
-        msgText = 'Wrong PIN';
-        isCorrect = false;
-      });
+          enteredPass = '';
+          msgText = 'Wrong PIN';
+          isCorrect = false;
+        });
       }
     }
   }
@@ -162,12 +162,11 @@ class _PinPageState extends State<PinPage> {
     if (mounted) {
       Navigator.pop(context);
       QuickAlert.show(
-        context: context,
-        type: QuickAlertType.success,
-        showConfirmBtn: false,
-        text: 'Reset PIN Successfully!',
-        autoCloseDuration: Duration(seconds: 1)
-      );
+          context: context,
+          type: QuickAlertType.success,
+          showConfirmBtn: false,
+          text: 'Reset PIN Successfully!',
+          autoCloseDuration: Duration(seconds: 1));
     }
   }
 
@@ -201,7 +200,8 @@ class _PinPageState extends State<PinPage> {
             ),
             SizedBox(height: 25),
             Center(
-              child: Text(msgText,
+              child: Text(
+                msgText,
                 style: TextStyle(
                     fontSize: 16,
                     color: isCorrect ? Colors.black : Colors.red,
@@ -244,22 +244,36 @@ class _PinPageState extends State<PinPage> {
             SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.confirm,
-                  title: 'PIN Reset',
-                  text: 'Do you want to reset your PIN?',
-                  animType: QuickAlertAnimType.scale,
-                  confirmBtnText: 'Yes',
-                  cancelBtnText: 'No',
-                  confirmBtnColor: Colors.green,
-                  onConfirmBtnTap: () {
-                    resetPin();
-                  },
-                );
+                if (isNew == false || (isNew == true && newPass != '')) {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.confirm,
+                    title: 'PIN Reset',
+                    text: 'Do you want to reset your PIN?',
+                    animType: QuickAlertAnimType.scale,
+                    confirmBtnText: 'Yes',
+                    cancelBtnText: 'No',
+                    confirmBtnColor: Colors.green,
+                    onConfirmBtnTap: () {
+                      resetPin();
+                    },
+                  );
+                } else if (isNew == true && newPass == '') {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.warning,
+                    title: 'PIN Reset',
+                    text: 'There is no PIN applied before',
+                    animType: QuickAlertAnimType.scale,
+                    showCancelBtn: false,
+                    showConfirmBtn: false,
+                    autoCloseDuration: Duration(seconds: 1)
+                  );
+                }
+                
               },
-              child: const Text(
-                'Forgot Password?',
+              child: Text(
+                isNew == false ? 'Forgot PIN?' : 'Reset PIN?',
                 style: TextStyle(
                     fontFamily: 'SFBold',
                     fontSize: 16,
@@ -269,87 +283,79 @@ class _PinPageState extends State<PinPage> {
             ),
             SizedBox(height: 10),
             Center(
-  child: Padding(
-    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width >= 650 ? MediaQuery.of(context).size.width >= 1100 ? MediaQuery.of(context).size.width/3 : MediaQuery.of(context).size.width/4 : 0),
-    child: Column(
-      children: [
-        for (var i = 0; i < 3; i++)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(
-                3,
-                (index) => Container(
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.amber,
-                  ),
-                  padding: const EdgeInsets.only(
-                      bottom: 18), // Adjust padding for the circle size
-                  child: Center(child: numButton(1 + 3 * i + index)),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width >= 650
+                        ? MediaQuery.of(context).size.width >= 1100
+                            ? MediaQuery.of(context).size.width / 3
+                            : MediaQuery.of(context).size.width / 4
+                        : 0),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < 3; i++)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(
+                            3,
+                            (index) => Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.amber,
+                              ),
+                              padding: const EdgeInsets.only(
+                                  bottom:
+                                      18), // Adjust padding for the circle size
+                              child:
+                                  Center(child: numButton(1 + 3 * i + index)),
+                            ),
+                          ).toList(),
+                        ),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const TextButton(onPressed: null, child: SizedBox()),
+                          Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.amber,
+                            ),
+                            padding: const EdgeInsets.only(bottom: 18),
+                            child: Center(child: numButton(0)),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(
+                                () {
+                                  if (enteredPass.isNotEmpty) {
+                                    enteredPass = enteredPass.substring(
+                                        0, enteredPass.length - 1);
+                                  }
+                                },
+                              );
+                            },
+                            child: const Icon(
+                              Icons.backspace,
+                              color: Colors.red,
+                              size: 24,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ).toList(),
+              ),
             ),
-          ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const TextButton(onPressed: null, child: SizedBox()),
-              Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.amber,
-                ),
-                padding: const EdgeInsets.only(bottom: 18),
-                child: Center(child: numButton(0)),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(
-                    () {
-                      if (enteredPass.isNotEmpty) {
-                        enteredPass = enteredPass.substring(
-                            0, enteredPass.length - 1);
-                      }
-                    },
-                  );
-                },
-                child: const Icon(
-                  Icons.backspace,
-                  color: Colors.red,
-                  size: 24,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  ),
-),
             SizedBox(
               height: 20,
             ),
-            // TextButton(
-            //   onPressed: () {
-            //     setState(() {
-            //       enteredPass = '';
-            //     });
-            //   },
-            //   style: ButtonStyle(
-            //     backgroundColor: WidgetStateProperty.all<Color>(Colors.amber),
-            //   ),
-            //   child: const Text(
-            //     'Reset',
-            //     style: TextStyle(
-            //       fontSize: 20,
-            //       color: Colors.black,
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
