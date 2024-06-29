@@ -145,6 +145,30 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         actions: [
           IconButton(
             icon: const Icon(
+              Icons.password_rounded,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.confirm,
+                title: 'Reset PIN',
+                text: 'Do you want to reset your PIN?',
+                animType: QuickAlertAnimType.scale,
+                confirmBtnText: 'Yes',
+                cancelBtnText: 'No',
+                confirmBtnColor: Colors.green,
+                onConfirmBtnTap: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => PinPage(isReset: true,)),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(
               Icons.logout_rounded,
               color: Colors.red,
             ),

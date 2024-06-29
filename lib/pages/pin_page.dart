@@ -7,7 +7,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quickalert/quickalert.dart';
 
 class PinPage extends StatefulWidget {
-  const PinPage({super.key});
+
+  final bool isReset;
+
+  PinPage({super.key, this.isReset = false});
 
   @override
   State<PinPage> createState() => _PinPageState();
@@ -58,6 +61,18 @@ class _PinPageState extends State<PinPage> {
     }
     print(myPass);
     print(isNew);
+
+    if (widget.isReset == true) {
+      print('PIN Reset');
+      _pass.delete('pass');
+      setState(() {
+        enteredPass = '';
+        newPass = '';
+        msgText = 'Create Your PIN';
+        isNew = true;
+        isCorrect = true;
+      });
+    }
   }
 
   resetState() {
